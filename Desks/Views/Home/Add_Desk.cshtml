@@ -1,0 +1,36 @@
+﻿@model Desks.Models.Desk
+@inject DBContext _context
+@{
+    ViewData["Title"] = "Add_Desk";
+}
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="add_Desk">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="location_ID" class="control-label">Location</label>
+
+                <select asp-for="location_ID" size="1" >
+                    @{ 
+                        List<Location> ls = _context.locations.ToList();
+                        foreach(Location l in ls)
+                        {
+                            @:<option>
+                                Write(l.location_name);
+                            @:</option>
+                        }
+                    }
+                </select>
+                <span asp-validation-for="location_ID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Add desk" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

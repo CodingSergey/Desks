@@ -1,0 +1,37 @@
+﻿@model Desks.Models.Location
+@inject DBContext _context
+@{
+    ViewData["Title"] = "Remove_Location";
+}
+
+<h1>Remove_Location</h1>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="remove_Location">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="location_name" class="control-label">Location</label>
+
+             
+                    <select asp-for="location_name" size="1">
+                        @{
+                            List<Location> ls = _context.locations.ToList();
+                            foreach (Location l in ls)
+                            {
+                                if (l.n_Desks == 0)
+                                {
+                                    @:<option>
+                                        Write(l.location_name);
+                                    @:</option>
+                                }
+                            }
+                        }
+                    </select>
+                <span asp-validation-for="location_name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Remove location" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>

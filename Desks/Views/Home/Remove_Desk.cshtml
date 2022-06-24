@@ -1,0 +1,32 @@
+﻿@model Desks.Models.Desk
+@inject DBContext _context
+@{
+    ViewData["Title"] = "remove_Desk";
+}
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="remove_Desk">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ID" class="control-label">Desk ID</label>
+                <select asp-for="ID" size="1">
+                    @{ 
+                        foreach(Desk d in _context.desks.ToList())
+                        {
+                            if(!d.booked)
+                            {
+                                @:<option>
+                                    Write(d.ID);
+                                @:</option>
+                            }
+                        }   
+                    }
+                </select>
+                <span asp-validation-for="ID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Remove desk" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>

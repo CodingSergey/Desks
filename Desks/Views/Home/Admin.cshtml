@@ -1,0 +1,96 @@
+﻿
+@using Microsoft.AspNetCore.Http
+@inject DBContext _context
+ @{
+     if (Context.Session.GetString("Username") != null)
+     {
+         if (Context.Session.GetInt32("Admin") == 0)
+         {
+             Context.Response.Redirect("Employee");
+         }
+     } else
+     {
+         Context.Response.Redirect("Index");
+     }
+    }
+<h4>Locations</h4>
+<table class="table table-bordered table-responsive table-hover">
+    <tr>
+        <th>Location name</th>
+        <th>Number of desks</th>
+    </tr>
+    @{
+        foreach (Location l in _context.locations.ToList())
+        {
+            @:<tr>
+            @:<td>
+                Write(l.location_name);
+            @:</td>
+            @:<td>
+                Write(l.n_Desks);
+            @:</td>
+            @:</tr>
+        }
+    }
+</table>
+<a href="Add_Location">
+    <button>Add location</button>
+</a>
+<br/>
+<a href="Remove_Location">
+    <button>Remove location</button>
+</a>
+
+
+
+<br/><br/>
+
+<h4>Desks</h4>
+<table class="table table-bordered table-responsive table-hover">
+    <tr>
+        <th>Desk ID</th>
+        <th>Location</th>
+        <th>Booked?</th>
+        <th>Booker name</th>
+    </tr>
+    @{
+        foreach (Desk d in _context.desks.ToList())
+        {
+            @:<tr>
+            @:<td>
+                Write(d.ID);
+            @:</td>
+            @:<td>
+                Write(_context.locations.Where(a => a.ID == d.location_ID).Single().location_name);
+            @:</td>
+            @:<td>
+                Write((Boolean)d.booked);
+            @:</td>
+            @:<td>
+
+            if (d.booked)
+            {
+                try
+                {
+                    Write(_context.accounts.Where(a => a.ID == d.owner_ID).Single().Username);
+                } catch(Exception e)
+                {
+                    Write("None");
+                }
+            }
+
+            @:</td>
+            @:</tr>
+        }
+            }
+        }
+</table>
+<a href="Add_Desk">
+    <button>Add desk</button>
+</a>
+<a href="Remove_Desk">
+    <button>Remove desk</button>
+</a>
+<a href="Make_Unavailable">
+    <button>Make unavailable</button>
+</a>

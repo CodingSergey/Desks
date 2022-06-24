@@ -1,0 +1,46 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model Desks.Models.Desk
+@{
+}
+@inject DBContext _context
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="reserve_Desk">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ID" class="control-label">Desk ID</label>
+                <select asp-for="ID" size="1">
+                    @{
+                        foreach (Desk d in _context.desks.ToList())
+                        {
+                            if (!d.booked)
+                            {
+                                @:<option>
+                                    Write(d.ID);
+                                @:</option>
+                            }
+                        }
+                    }
+                </select>
+                <label>Days</label>
+                <select name="days">
+                    @{ 
+                        for(int i = 1; i < 8; i++)
+                        {
+                           @:<option>
+                               Write(i);
+                           @:</option>
+                        }
+                    }
+                </select>
+                <span asp-validation-for="ID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Reserve desk" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>

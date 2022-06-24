@@ -1,0 +1,111 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@inject DBContext _context
+@using Microsoft.AspNetCore.Http
+
+
+
+Desks
+
+<table class="table table-bordered table-responsive table-hover">
+    <tr>
+        <th>Desk ID</th>
+        <th>Location</th>
+        <th>Booked?</th>
+    </tr>
+    @{
+        if (Context.Session.GetString("Location") == null)
+        {
+            foreach (Desk d in _context.desks.ToList())
+            {
+                @:<tr>
+                    @:<td>
+                        Write(d.ID);
+                    @:</td>
+                    @:<td>
+                        Write(_context.locations.Where(a => a.ID == d.location_ID).Single().location_name);
+                    @:</td>
+                    @:<td>
+                        Write((Boolean)d.booked);
+                    @:</td>
+                @:</tr>
+            }
+        }
+        else
+        {
+            Location l = _context.locations.Where(a => a.location_name == Context.Session.GetString("Location")).Single();
+            foreach (Desk d in _context.desks.Where(a => a.location_ID == l.ID).ToList())
+            {
+                @:<tr>
+                    @:<td>
+                        Write(d.ID);
+                    @:</td>
+                    @:<td>
+                        Write(_context.locations.Where(a => a.ID == d.location_ID).Single().location_name);
+                    @:</td>
+                    @:<td>
+                        Write((Boolean)d.booked);
+                    @:</td>
+                @:</tr>
+            }
+            }
+        }
+    </table>
+
+<a href="Book">
+    @{
+        if (!_context.accounts.Where(a => a.Username == Context.Session.GetString("Username")).Single().desk_Reserved)
+        {
+            @:<button>
+                Write("Book");
+            @:</button>
+        }
+    }
+</a>
+<a href="Reserve">
+    @{
+        if (!_context.accounts.Where(a => a.Username == Context.Session.GetString("Username")).Single().desk_Reserved)
+        {
+            @:<button>
+                Write("Reserve");
+            @:</button>
+        }
+    }
+
+</a>
+<a href="Change">
+@{
+    if (_context.accounts.Where(a => a.Username == Context.Session.GetString("Username")).Single().desk_Reserved)
+    {
+        @:<button>
+            Write("Change");
+        @:</button>
+    }
+}
+</a>
+<a href="Filter">
+    <button>Filter</button>
+</a>
+
+
+
+
+
+@{
+    if (Context.Session.GetString("Username") != null)
+    {
+        if (Context.Session.GetInt32("Admin") == 1)
+        {
+            Context.Response.Redirect("Admin");
+        }
+    }
+    else
+    {
+        Context.Response.Redirect("Index");
+    }
+    if(Context.Session.GetInt32("TooLate") == 1)
+    {
+        Write("Too late to change desk");
+    }
+}
